@@ -18,7 +18,7 @@
 
 # metadata
 ' Ninja-IDE Link Checker '
-__version__ = ' 0.1 '
+__version__ = ' 0.2 '
 __license__ = ' GPL '
 __author__ = ' juancarlospaco '
 __email__ = ' juancarlospaco@ubuntu.com '
@@ -34,6 +34,7 @@ __full_licence__ = ''
 from PyQt4.QtGui import QIcon
 from PyQt4.QtGui import QLabel
 from PyQt4.QtGui import QDockWidget
+from PyQt4.QtGui import QScrollArea
 
 try:
     from PyKDE4.kdecore import *
@@ -56,11 +57,13 @@ class Main(plugin.Plugin):
                                            QDockWidget.DockWidgetMovable)
         self.dock.setWindowTitle(__doc__)
         self.dock.setStyleSheet('QDockWidget::title{text-align: center;}')
+        self.scrollable = QScrollArea()
+        self.dock.setWidget(self.scrollable)
         try:
             self.factory = KPluginLoader("klinkstatuspart").factory()
-            self.dock.setWidget(self.factory.create(self).widget())
+            self.scrollable.setWidget(self.factory.create(self).widget())
         except:
-            self.dock.setWidget(QLabel(""" <center>
+            self.scrollable.setWidget(QLabel(""" <center>
             <h3>ಠ_ಠ<br> ERROR: Please, install KLinkCheck App ! </h3><br>
             <br><i> (Sorry, cant embed non-Qt Apps). </i><center>"""))
         self.misc = self.locator.get_service('misc')
