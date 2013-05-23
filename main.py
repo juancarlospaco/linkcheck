@@ -18,12 +18,12 @@
 
 # metadata
 ' Ninja-IDE Link Checker '
-__version__ = ' 0.2 '
+__version__ = ' 0.4 '
 __license__ = ' GPL '
 __author__ = ' juancarlospaco '
 __email__ = ' juancarlospaco@ubuntu.com '
 __url__ = ''
-__date__ = ' 05/03/2013 '
+__date__ = ' 05/05/2013 '
 __prj__ = ' linkcheck '
 __docformat__ = 'html'
 __source__ = ''
@@ -31,18 +31,21 @@ __full_licence__ = ''
 
 
 # imports
-from PyQt4.QtGui import QIcon
-from PyQt4.QtGui import QLabel
-from PyQt4.QtGui import QDockWidget
-from PyQt4.QtGui import QScrollArea
+from sip import setapi
+from PyQt4.QtGui import QIcon, QLabel, QDockWidget, QScrollArea
 
 try:
-    from PyKDE4.kdecore import *
+    from PyKDE4.kdecore import KPluginLoader
     from PyKDE4.kparts import *
 except ImportError:
     pass
 
 from ninja_ide.core import plugin
+
+
+# API 2
+(setapi(a, 2) for a in ("QDate", "QDateTime", "QString", "QTime", "QUrl",
+                        "QTextStream", "QVariant"))
 
 
 ###############################################################################
@@ -54,7 +57,7 @@ class Main(plugin.Plugin):
         " Init Class dock "
         self.dock = QDockWidget()
         self.dock.setFeatures(QDockWidget.DockWidgetFloatable |
-                                           QDockWidget.DockWidgetMovable)
+                              QDockWidget.DockWidgetMovable)
         self.dock.setWindowTitle(__doc__)
         self.dock.setStyleSheet('QDockWidget::title{text-align: center;}')
         self.scrollable = QScrollArea()
@@ -63,8 +66,8 @@ class Main(plugin.Plugin):
             self.factory = KPluginLoader("klinkstatuspart").factory()
             self.scrollable.setWidget(self.factory.create(self).widget())
         except:
-            self.scrollable.setWidget(QLabel(""" <center>
-            <h3>ಠ_ಠ<br> ERROR: Please, install KLinkCheck App ! </h3><br>
+            self.scrollable.setWidget(QLabel(""" <center> <h3>ಠ_ಠ<br>
+            ERROR: Please, install KLinkCheck and PyKDE ! </h3><br>
             <br><i> (Sorry, cant embed non-Qt Apps). </i><center>"""))
         self.misc = self.locator.get_service('misc')
         self.misc.add_widget(self.dock, QIcon.fromTheme("insert-link"), __doc__)
